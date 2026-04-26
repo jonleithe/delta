@@ -1,8 +1,7 @@
-#include <cctype>
 #include <cstdio>
-#include <algorithm>
 
 #include "delta.h"
+#include "unit_helpers.h"
 
 
 
@@ -51,33 +50,34 @@ std::string Temperature::to_string(TemperatureUnit unit) const{
 
 
 
+static constexpr UnitAlias<TemperatureUnit> kTemperatureAliases[] = {
+    {TemperatureUnit::Celsius, "c"},
+    {TemperatureUnit::Celsius, "celsius"},
+    {TemperatureUnit::Fahrenheit, "f"},
+    {TemperatureUnit::Fahrenheit, "fahrenheit"},
+    {TemperatureUnit::Kelvin, "k"},
+    {TemperatureUnit::Kelvin, "kelvin"},
+    {TemperatureUnit::Rankine, "r"},
+    {TemperatureUnit::Rankine, "rankine"},
+};
+
+static constexpr UnitDisplay<TemperatureUnit> kTemperatureDisplay[] = {
+    {TemperatureUnit::Celsius, "\xC2\xB0" "C"},
+    {TemperatureUnit::Fahrenheit, "\xC2\xB0" "F"},
+    {TemperatureUnit::Kelvin, "K"},
+    {TemperatureUnit::Rankine, "\xC2\xB0" "R"},
+};
+
+static constexpr TemperatureUnit kTemperatureOutputOrder[] = {
+    TemperatureUnit::Celsius,
+    TemperatureUnit::Fahrenheit,
+    TemperatureUnit::Kelvin,
+    TemperatureUnit::Rankine,
+};
+
 static bool parse_temperature_unit(const std::string& unit_str,
                                    TemperatureUnit* out_unit){
-    std::string lower = unit_str;
-    std::transform(lower.begin(), lower.end(), lower.begin(),
-                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-
-    if (lower == "c" || lower == "celsius") {
-        *out_unit = TemperatureUnit::Celsius;
-        return true;
-    }
-
-    if (lower == "f" || lower == "fahrenheit") {
-        *out_unit = TemperatureUnit::Fahrenheit;
-        return true;
-    }
-
-    if (lower == "k" || lower == "kelvin") {
-        *out_unit = TemperatureUnit::Kelvin;
-        return true;
-    }
-
-    if (lower == "r" || lower == "rankine") {
-        *out_unit = TemperatureUnit::Rankine;
-        return true;
-    }
-
-    return false;
+    return parse_unit_aliases(unit_str, kTemperatureAliases, out_unit);
 } // ———  END OF function parse_temperature_unit————————————————————————————————
 
 
@@ -85,13 +85,8 @@ static bool parse_temperature_unit(const std::string& unit_str,
 static void convert_temperature(double value, TemperatureUnit from_unit){
     Temperature temp(value, from_unit);
     printf("Temperature conversion of %.2f %s:\n", value,
-           (from_unit == TemperatureUnit::Celsius ? "\xC2\xB0" "C" :
-            from_unit == TemperatureUnit::Fahrenheit ? "\xC2\xB0" "F" :
-            from_unit == TemperatureUnit::Kelvin ? "K" : "\xC2\xB0" "R"));
-    printf("  %s\n", temp.to_string(TemperatureUnit::Celsius).c_str());
-    printf("  %s\n", temp.to_string(TemperatureUnit::Fahrenheit).c_str());
-    printf("  %s\n", temp.to_string(TemperatureUnit::Kelvin).c_str());
-    printf("  %s\n", temp.to_string(TemperatureUnit::Rankine).c_str());
+           display_symbol(from_unit, kTemperatureDisplay));
+    print_all_conversions(temp, kTemperatureOutputOrder);
 } // ———  END OF function convert_temperature———————————————————————————————————
 
 

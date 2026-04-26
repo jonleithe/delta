@@ -1,8 +1,7 @@
-#include <cctype>
 #include <cstdio>
-#include <algorithm>
 
 #include "delta.h"
+#include "unit_helpers.h"
 
 
 
@@ -121,48 +120,57 @@ Volume operator*(double scalar, const Volume& vol){
 
 
 
+static constexpr UnitAlias<VolumeUnit> kVolumeAliases[] = {
+    {VolumeUnit::Milliliter, "ml"},
+    {VolumeUnit::Milliliter, "milliliter"},
+    {VolumeUnit::Milliliter, "milliliters"},
+    {VolumeUnit::Liter, "l"},
+    {VolumeUnit::Liter, "liter"},
+    {VolumeUnit::Liter, "liters"},
+    {VolumeUnit::Gallon, "gal"},
+    {VolumeUnit::Gallon, "gallon"},
+    {VolumeUnit::Gallon, "gallons"},
+    {VolumeUnit::FluidOunce, "fl oz"},
+    {VolumeUnit::FluidOunce, "fluidounce"},
+    {VolumeUnit::FluidOunce, "fluidounces"},
+    {VolumeUnit::FluidOunce, "floz"},
+    {VolumeUnit::CubicMeter, "m3"},
+    {VolumeUnit::CubicMeter, "m\xC2\xB3"},
+    {VolumeUnit::CubicMeter, "cubicmeter"},
+    {VolumeUnit::CubicMeter, "cubicmeters"},
+    {VolumeUnit::CubicMillimeter, "mm3"},
+    {VolumeUnit::CubicMillimeter, "mm\xC2\xB3"},
+    {VolumeUnit::CubicMillimeter, "cubicmm"},
+    {VolumeUnit::CubicMillimeter, "cubicmillimeter"},
+    {VolumeUnit::CubicCentimeter, "cm3"},
+    {VolumeUnit::CubicCentimeter, "cm\xC2\xB3"},
+    {VolumeUnit::CubicCentimeter, "cubiccm"},
+    {VolumeUnit::CubicCentimeter, "cubiccentimeter"},
+};
+
+static constexpr UnitDisplay<VolumeUnit> kVolumeDisplay[] = {
+    {VolumeUnit::Milliliter, "mL"},
+    {VolumeUnit::Liter, "L"},
+    {VolumeUnit::Gallon, "gal"},
+    {VolumeUnit::FluidOunce, "fl oz"},
+    {VolumeUnit::CubicMeter, "m\xC2\xB3"},
+    {VolumeUnit::CubicMillimeter, "mm\xC2\xB3"},
+    {VolumeUnit::CubicCentimeter, "cm\xC2\xB3"},
+};
+
+static constexpr VolumeUnit kVolumeOutputOrder[] = {
+    VolumeUnit::Milliliter,
+    VolumeUnit::Liter,
+    VolumeUnit::Gallon,
+    VolumeUnit::FluidOunce,
+    VolumeUnit::CubicMeter,
+    VolumeUnit::CubicMillimeter,
+    VolumeUnit::CubicCentimeter,
+};
+
 static bool parse_volume_unit(const std::string& unit_str,
                               VolumeUnit* out_unit){
-    std::string lower = unit_str;
-    std::transform(lower.begin(), lower.end(), lower.begin(),
-                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-
-    if (lower == "ml" || lower == "milliliter" || lower == "milliliters") {
-        *out_unit = VolumeUnit::Milliliter;
-        return true;
-    }
-    
-    if (lower == "l" || lower == "liter" || lower == "liters") {
-        *out_unit = VolumeUnit::Liter;
-        return true;
-    }
-    
-    if (lower == "gal" || lower == "gallon" || lower == "gallons") {
-        *out_unit = VolumeUnit::Gallon;
-        return true;
-    }
-    
-    if (lower == "fl oz" || lower == "fluidounce" || lower == "fluidounces" || lower == "floz") {
-        *out_unit = VolumeUnit::FluidOunce;
-        return true;
-    }
-    
-    if (lower == "m3" || lower == "m\xC2\xB3" || lower == "cubicmeter" || lower == "cubicmeters") {
-        *out_unit = VolumeUnit::CubicMeter;
-        return true;
-    }
-
-    if (lower == "mm3" || lower == "mm\xC2\xB3" || lower == "cubicmm" || lower == "cubicmillimeter") {
-        *out_unit = VolumeUnit::CubicMillimeter;
-        return true;
-    }
-
-    if (lower == "cm3" || lower == "cm\xC2\xB3" || lower == "cubiccm" || lower == "cubiccentimeter") {
-        *out_unit = VolumeUnit::CubicCentimeter;
-        return true;
-    }
-
-    return false;
+    return parse_unit_aliases(unit_str, kVolumeAliases, out_unit);
 } // ———  END OF function parse_volume_unit—————————————————————————————————————
 
 
@@ -170,19 +178,8 @@ static bool parse_volume_unit(const std::string& unit_str,
 static void convert_volume(double value, VolumeUnit from_unit){
     Volume vol(value, from_unit);
     printf("Volume conversion of %.4f %s:\n", value,
-           (from_unit == VolumeUnit::Milliliter ? "mL" :
-            from_unit == VolumeUnit::Liter ? "L" :
-            from_unit == VolumeUnit::Gallon ? "gal" :
-            from_unit == VolumeUnit::FluidOunce ? "fl oz" :
-            from_unit == VolumeUnit::CubicMeter ? "m\xC2\xB3" :
-            from_unit == VolumeUnit::CubicMillimeter ? "mm\xC2\xB3" : "cm\xC2\xB3"));
-    printf("  %s\n", vol.to_string(VolumeUnit::Milliliter).c_str());
-    printf("  %s\n", vol.to_string(VolumeUnit::Liter).c_str());
-    printf("  %s\n", vol.to_string(VolumeUnit::Gallon).c_str());
-    printf("  %s\n", vol.to_string(VolumeUnit::FluidOunce).c_str());
-    printf("  %s\n", vol.to_string(VolumeUnit::CubicMeter).c_str());
-    printf("  %s\n", vol.to_string(VolumeUnit::CubicMillimeter).c_str());
-    printf("  %s\n", vol.to_string(VolumeUnit::CubicCentimeter).c_str());
+           display_symbol(from_unit, kVolumeDisplay));
+    print_all_conversions(vol, kVolumeOutputOrder);
 } // ———  END OF function convert_volume————————————————————————————————————————
 
 

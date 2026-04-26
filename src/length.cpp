@@ -1,8 +1,7 @@
-#include <cctype>
 #include <cstdio>
-#include <algorithm>
 
 #include "delta.h"
+#include "unit_helpers.h"
 
 
 
@@ -118,48 +117,53 @@ Length operator*(double scalar, const Length& len){
 
 
 
+static constexpr UnitAlias<LengthUnit> kLengthAliases[] = {
+    {LengthUnit::Millimeter, "mm"},
+    {LengthUnit::Millimeter, "millimeter"},
+    {LengthUnit::Millimeter, "millimeters"},
+    {LengthUnit::Centimeter, "cm"},
+    {LengthUnit::Centimeter, "centimeter"},
+    {LengthUnit::Centimeter, "centimeters"},
+    {LengthUnit::Meter, "m"},
+    {LengthUnit::Meter, "meter"},
+    {LengthUnit::Meter, "meters"},
+    {LengthUnit::Kilometer, "km"},
+    {LengthUnit::Kilometer, "kilometer"},
+    {LengthUnit::Kilometer, "kilometers"},
+    {LengthUnit::Inch, "in"},
+    {LengthUnit::Inch, "inch"},
+    {LengthUnit::Inch, "inches"},
+    {LengthUnit::Foot, "ft"},
+    {LengthUnit::Foot, "foot"},
+    {LengthUnit::Foot, "feet"},
+    {LengthUnit::Mile, "mi"},
+    {LengthUnit::Mile, "mile"},
+    {LengthUnit::Mile, "miles"},
+};
+
+static constexpr UnitDisplay<LengthUnit> kLengthDisplay[] = {
+    {LengthUnit::Millimeter, "mm"},
+    {LengthUnit::Centimeter, "cm"},
+    {LengthUnit::Meter, "m"},
+    {LengthUnit::Kilometer, "km"},
+    {LengthUnit::Inch, "in"},
+    {LengthUnit::Foot, "ft"},
+    {LengthUnit::Mile, "mi"},
+};
+
+static constexpr LengthUnit kLengthOutputOrder[] = {
+    LengthUnit::Millimeter,
+    LengthUnit::Centimeter,
+    LengthUnit::Meter,
+    LengthUnit::Kilometer,
+    LengthUnit::Inch,
+    LengthUnit::Foot,
+    LengthUnit::Mile,
+};
+
 static bool parse_length_unit(const std::string& unit_str,
                               LengthUnit* out_unit){
-    std::string lower = unit_str;
-    std::transform(lower.begin(), lower.end(), lower.begin(),
-                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-
-    if (lower == "mm" || lower == "millimeter" || lower == "millimeters") {
-        *out_unit = LengthUnit::Millimeter;
-        return true;
-    }
-
-    if (lower == "cm" || lower == "centimeter" || lower == "centimeters") {
-        *out_unit = LengthUnit::Centimeter;
-        return true;
-    }
-
-    if (lower == "m" || lower == "meter" || lower == "meters") {
-        *out_unit = LengthUnit::Meter;
-        return true;
-    }
-
-    if (lower == "km" || lower == "kilometer" || lower == "kilometers") {
-        *out_unit = LengthUnit::Kilometer;
-        return true;
-    }
-
-    if (lower == "in" || lower == "inch" || lower == "inches") {
-        *out_unit = LengthUnit::Inch;
-        return true;
-    }
-
-    if (lower == "ft" || lower == "foot" || lower == "feet") {
-        *out_unit = LengthUnit::Foot;
-        return true;
-    }
-
-    if (lower == "mi" || lower == "mile" || lower == "miles") {
-        *out_unit = LengthUnit::Mile;
-        return true;
-    }
-
-    return false;
+    return parse_unit_aliases(unit_str, kLengthAliases, out_unit);
 } // ———  END OF function parse_length_unit—————————————————————————————————————
 
 
@@ -167,19 +171,8 @@ static bool parse_length_unit(const std::string& unit_str,
 static void convert_length(double value, LengthUnit from_unit){
     Length len(value, from_unit);
     printf("Length conversion of %.4f %s:\n", value,
-           (from_unit == LengthUnit::Millimeter ? "mm" :
-            from_unit == LengthUnit::Centimeter ? "cm" :
-            from_unit == LengthUnit::Meter ? "m" :
-            from_unit == LengthUnit::Kilometer ? "km" :
-            from_unit == LengthUnit::Inch ? "in" :
-            from_unit == LengthUnit::Foot ? "ft" : "mi"));
-    printf("  %s\n", len.to_string(LengthUnit::Millimeter).c_str());
-    printf("  %s\n", len.to_string(LengthUnit::Centimeter).c_str());
-    printf("  %s\n", len.to_string(LengthUnit::Meter).c_str());
-    printf("  %s\n", len.to_string(LengthUnit::Kilometer).c_str());
-    printf("  %s\n", len.to_string(LengthUnit::Inch).c_str());
-    printf("  %s\n", len.to_string(LengthUnit::Foot).c_str());
-    printf("  %s\n", len.to_string(LengthUnit::Mile).c_str());
+           display_symbol(from_unit, kLengthDisplay));
+    print_all_conversions(len, kLengthOutputOrder);
 } // ———  END OF function convert_length————————————————————————————————————————
 
 

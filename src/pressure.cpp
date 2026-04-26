@@ -1,8 +1,7 @@
-#include <cctype>
 #include <cstdio>
-#include <algorithm>
 
 #include "delta.h"
+#include "unit_helpers.h"
 
 
 
@@ -112,48 +111,45 @@ Pressure operator*(double scalar, const Pressure& p) {
 
 
 
+static constexpr UnitAlias<PressureUnit> kPressureAliases[] = {
+    {PressureUnit::Pascal, "pa"},
+    {PressureUnit::Pascal, "pascal"},
+    {PressureUnit::Pascal, "pascals"},
+    {PressureUnit::Kilopascal, "kpa"},
+    {PressureUnit::Kilopascal, "kilopascal"},
+    {PressureUnit::Kilopascal, "kilopascals"},
+    {PressureUnit::Bar, "bar"},
+    {PressureUnit::Atmosphere, "atm"},
+    {PressureUnit::Atmosphere, "atmosphere"},
+    {PressureUnit::Atmosphere, "atmospheres"},
+    {PressureUnit::Psi, "psi"},
+    {PressureUnit::Torr, "torr"},
+    {PressureUnit::MmHg, "mmhg"},
+};
+
+static constexpr UnitDisplay<PressureUnit> kPressureDisplay[] = {
+    {PressureUnit::Pascal, "Pa"},
+    {PressureUnit::Kilopascal, "kPa"},
+    {PressureUnit::Bar, "bar"},
+    {PressureUnit::Atmosphere, "atm"},
+    {PressureUnit::Psi, "psi"},
+    {PressureUnit::Torr, "torr"},
+    {PressureUnit::MmHg, "mmHg"},
+};
+
+static constexpr PressureUnit kPressureOutputOrder[] = {
+    PressureUnit::Pascal,
+    PressureUnit::Kilopascal,
+    PressureUnit::Bar,
+    PressureUnit::Atmosphere,
+    PressureUnit::Psi,
+    PressureUnit::Torr,
+    PressureUnit::MmHg,
+};
+
 static bool parse_pressure_unit(const std::string& unit_str,
                                 PressureUnit* out_unit){
-    std::string lower = unit_str;
-    std::transform(lower.begin(), lower.end(), lower.begin(),
-                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-
-    if (lower == "pa" || lower == "pascal" || lower == "pascals") {
-        *out_unit = PressureUnit::Pascal;
-        return true;
-    }
-
-    if (lower == "kpa" || lower == "kilopascal" || lower == "kilopascals") {
-        *out_unit = PressureUnit::Kilopascal;
-        return true;
-    }
-
-    if (lower == "bar") {
-        *out_unit = PressureUnit::Bar;
-        return true;
-    }
-
-    if (lower == "atm" || lower == "atmosphere" || lower == "atmospheres") {
-        *out_unit = PressureUnit::Atmosphere;
-        return true;
-    }
-
-    if (lower == "psi") {
-        *out_unit = PressureUnit::Psi;
-        return true;
-    }
-
-    if (lower == "torr") {
-        *out_unit = PressureUnit::Torr;
-        return true;
-    }
-
-    if (lower == "mmhg") {
-        *out_unit = PressureUnit::MmHg;
-        return true;
-    }
-
-    return false;
+    return parse_unit_aliases(unit_str, kPressureAliases, out_unit);
 } // ———  END OF function parse_pressure_unit———————————————————————————————————
 
 
@@ -161,19 +157,8 @@ static bool parse_pressure_unit(const std::string& unit_str,
 static void convert_pressure(double value, PressureUnit from_unit){
     Pressure p(value, from_unit);
     printf("Pressure conversion of %.4f %s:\n", value,
-           (from_unit == PressureUnit::Pascal ? "Pa" :
-            from_unit == PressureUnit::Kilopascal ? "kPa" :
-            from_unit == PressureUnit::Bar ? "bar" :
-            from_unit == PressureUnit::Atmosphere ? "atm" :
-            from_unit == PressureUnit::Psi ? "psi" :
-            from_unit == PressureUnit::Torr ? "torr" : "mmHg"));
-    printf("  %s\n", p.to_string(PressureUnit::Pascal).c_str());
-    printf("  %s\n", p.to_string(PressureUnit::Kilopascal).c_str());
-    printf("  %s\n", p.to_string(PressureUnit::Bar).c_str());
-    printf("  %s\n", p.to_string(PressureUnit::Atmosphere).c_str());
-    printf("  %s\n", p.to_string(PressureUnit::Psi).c_str());
-    printf("  %s\n", p.to_string(PressureUnit::Torr).c_str());
-    printf("  %s\n", p.to_string(PressureUnit::MmHg).c_str());
+           display_symbol(from_unit, kPressureDisplay));
+    print_all_conversions(p, kPressureOutputOrder);
 } // ———  END OF function convert_pressure——————————————————————————————————————
 
 
