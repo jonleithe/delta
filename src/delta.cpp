@@ -266,16 +266,27 @@ CommandResult MDelta::process_input(const std::string& input)
         std::string remainder;
         std::getline(iss >> std::ws, remainder);
         if(!remainder.empty()){
-            if(remainder.find(' ') == std::string::npos){
-                
-                // Exactly one more token: targeted conversion mode
-                to_unit_str = remainder;
+            std::istringstream remainder_stream(remainder);
+            std::vector<std::string> remainder_tokens;
+            std::string token;
+            while (remainder_stream >> token) {
+                remainder_tokens.push_back(token);
             }
-            else{
+
+            if(remainder_tokens.size() == 1){
+                
+                // Exactly one remaining token (ignoring extra spaces): targeted conversion mode
+                to_unit_str = remainder_tokens.front();
+            }
+            else if(!remainder_tokens.empty()){
                 
                 // Multiple remaining tokens: treat all as part of a multi-word from_unit
                 from_unit_str += " ";
-                from_unit_str += remainder;
+                from_unit_str += remainder_tokens.front();
+                for (std::size_t i = 1; i < remainder_tokens.size(); ++i) {
+                    from_unit_str += " ";
+                    from_unit_str += remainder_tokens[i];
+                }
             }
         }
     }
