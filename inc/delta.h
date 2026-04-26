@@ -226,7 +226,7 @@ public:
     int run(int argc, char* argv[]);
 
 private:
-    std::string program_name_ = "delta";
+    std::string program_name_ = "unitfy";
 
     void repl(void);
     CommandResult process_input(const std::string& input);
