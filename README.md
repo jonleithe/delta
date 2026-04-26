@@ -1,6 +1,6 @@
 # delta
 
-`delta` is a C++17 command-line unit conversion utility.
+`delta` is a C++17 command-line unit conversion utility, developed using AI.
 
 It supports temperature, length, volume, and pressure conversions, with:
 - interactive REPL mode
