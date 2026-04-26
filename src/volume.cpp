@@ -14,7 +14,8 @@
 
 namespace unitfy {
 
-Volume::Volume(double value, VolumeUnit unit){
+Volume::Volume(double value, VolumeUnit unit)
+{
     switch (unit){
         case VolumeUnit::Milliliter:        liters_ = value / 1000.0;
                                             break;
@@ -40,7 +41,8 @@ Volume::Volume(double value, VolumeUnit unit){
 
 
 
-double Volume::to_unit(VolumeUnit unit) const{
+double Volume::to_unit(VolumeUnit unit) const
+{
     switch (unit){
         case VolumeUnit::Milliliter:        return liters_ * 1000.0;
         case VolumeUnit::Liter:             return liters_;
@@ -55,7 +57,8 @@ double Volume::to_unit(VolumeUnit unit) const{
 
 
 
-std::string Volume::to_string(VolumeUnit unit) const{
+std::string Volume::to_string(VolumeUnit unit) const
+{
     static const char* names[] = {"mL",
                                   "L",
                                   "gal",
@@ -72,7 +75,8 @@ std::string Volume::to_string(VolumeUnit unit) const{
 
 
 
-Volume Volume::operator+(const Volume& other) const{
+Volume Volume::operator+(const Volume& other) const
+{
     Volume result(liters_, VolumeUnit::Liter);
     result.liters_ = this->liters_ + other.liters_;
     
@@ -81,7 +85,8 @@ Volume Volume::operator+(const Volume& other) const{
 
 
 
-Volume Volume::operator-(const Volume& other) const{
+Volume Volume::operator-(const Volume& other) const
+{
     Volume result(liters_, VolumeUnit::Liter);
     result.liters_ = this->liters_ - other.liters_;
     if (result.liters_ < 0.0) {
@@ -93,7 +98,8 @@ Volume Volume::operator-(const Volume& other) const{
 
 
 
-Volume Volume::operator*(double scalar) const{
+Volume Volume::operator*(double scalar) const
+{
     Volume result(liters_, VolumeUnit::Liter);
     result.liters_ = this->liters_ * scalar;
     if (result.liters_ < 0.0) {
@@ -105,7 +111,8 @@ Volume Volume::operator*(double scalar) const{
 
 
 
-Volume Volume::operator/(double scalar) const{
+Volume Volume::operator/(double scalar) const
+{
     if (scalar == 0.0) {
         throw QuantityError(quantity_error_messages::kDivisionByZero);
     }
@@ -121,7 +128,8 @@ Volume Volume::operator/(double scalar) const{
 
 
 
-Volume operator*(double scalar, const Volume& vol){
+Volume operator*(double scalar, const Volume& vol)
+{
     return vol * scalar;
 } // ———  END OF function operator*(Volume)—————————————————————————————————————
 
@@ -153,7 +161,9 @@ static constexpr UnitAlias<VolumeUnit> kVolumeAliases[] = {
     {VolumeUnit::CubicCentimeter, "cm\xC2\xB3"},
     {VolumeUnit::CubicCentimeter, "cubiccm"},
     {VolumeUnit::CubicCentimeter, "cubiccentimeter"},
-};
+}; // ———  END OF kVolumeAliases————————————————————————————————————————————————
+
+
 
 static constexpr UnitDisplay<VolumeUnit> kVolumeDisplay[] = {
     {VolumeUnit::Milliliter, "mL"},
@@ -163,7 +173,9 @@ static constexpr UnitDisplay<VolumeUnit> kVolumeDisplay[] = {
     {VolumeUnit::CubicMeter, "m\xC2\xB3"},
     {VolumeUnit::CubicMillimeter, "mm\xC2\xB3"},
     {VolumeUnit::CubicCentimeter, "cm\xC2\xB3"},
-};
+}; // ———  END OF kVolumeDisplay————————————————————————————————————————————————
+
+
 
 static constexpr VolumeUnit kVolumeOutputOrder[] = {
     VolumeUnit::Milliliter,
@@ -173,17 +185,22 @@ static constexpr VolumeUnit kVolumeOutputOrder[] = {
     VolumeUnit::CubicMeter,
     VolumeUnit::CubicMillimeter,
     VolumeUnit::CubicCentimeter,
-};
+}; // ———  END OF kVolumeOutputOrder————————————————————————————————————————————
+
+
 
 static bool parse_volume_unit(const std::string& unit_str,
-                              VolumeUnit* out_unit){
+                              VolumeUnit* out_unit)
+{
     return parse_unit_aliases(unit_str, kVolumeAliases, out_unit);
 } // ———  END OF function parse_volume_unit—————————————————————————————————————
 
 
 
-static void convert_volume(double value, VolumeUnit from_unit){
+static void convert_volume(double value, VolumeUnit from_unit)
+{
     Volume vol(value, from_unit);
+
     printf("Volume conversion of %.4f %s:\n", value,
            display_symbol(from_unit, kVolumeDisplay));
     print_all_conversions(vol, kVolumeOutputOrder);
@@ -191,8 +208,10 @@ static void convert_volume(double value, VolumeUnit from_unit){
 
 
 
-bool try_convert_volume(double value, const std::string& unit_str, const std::string& to_unit_str){
+bool try_convert_volume(double value, const std::string& unit_str, const std::string& to_unit_str)
+{ 
     VolumeUnit from_unit;
+
     if (!parse_volume_unit(unit_str, &from_unit)) {
         return false;
     }
@@ -206,11 +225,14 @@ bool try_convert_volume(double value, const std::string& unit_str, const std::st
     if (!parse_volume_unit(to_unit_str, &to_unit)) {
         printf("Incompatible units: '%s' is a volume unit, '%s' is not\n",
                unit_str.c_str(), to_unit_str.c_str());
-        return true;
+        
+               return true;
     }
 
     Volume vol(value, from_unit);
+    
     printf("%s = %s\n", vol.to_string(from_unit).c_str(), vol.to_string(to_unit).c_str());
+    
     return true;
 } // ———  END OF function try_convert_volume————————————————————————————————————
 

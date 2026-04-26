@@ -14,7 +14,8 @@
 
 namespace unitfy {
 
-Pressure::Pressure(double value, PressureUnit unit){
+Pressure::Pressure(double value, PressureUnit unit)
+{
     switch (unit){
         case PressureUnit::Pascal:      pascal_ = value;
                                         break;
@@ -40,7 +41,8 @@ Pressure::Pressure(double value, PressureUnit unit){
 
 
 
-double Pressure::to_unit(PressureUnit unit) const{
+double Pressure::to_unit(PressureUnit unit) const
+{
     switch (unit){
         case PressureUnit::Pascal:      return pascal_;
         case PressureUnit::Kilopascal:  return pascal_ / 1000.0;
@@ -55,7 +57,8 @@ double Pressure::to_unit(PressureUnit unit) const{
 
 
 
-std::string Pressure::to_string(PressureUnit unit) const{
+std::string Pressure::to_string(PressureUnit unit) const
+{
     static const char* names[] = {"Pa", "kPa", "bar", "atm", "psi", "torr", "mmHg"};
 
     return format_value(to_unit(unit), format_settings::kPressurePrecision) + " " + names[static_cast<int>(unit)];
@@ -63,7 +66,8 @@ std::string Pressure::to_string(PressureUnit unit) const{
 
 
 
-Pressure Pressure::operator+(const Pressure& other) const{
+Pressure Pressure::operator+(const Pressure& other) const
+{
     Pressure result(pascal_, PressureUnit::Pascal);
     result.pascal_ = this->pascal_ + other.pascal_;
 
@@ -72,7 +76,8 @@ Pressure Pressure::operator+(const Pressure& other) const{
 
 
 
-Pressure Pressure::operator-(const Pressure& other) const{
+Pressure Pressure::operator-(const Pressure& other) const
+{
     Pressure result(pascal_, PressureUnit::Pascal);
     result.pascal_ = this->pascal_ - other.pascal_;
     if (result.pascal_ < 0.0) {
@@ -84,7 +89,8 @@ Pressure Pressure::operator-(const Pressure& other) const{
 
 
 
-Pressure Pressure::operator*(double scalar) const{
+Pressure Pressure::operator*(double scalar) const
+{
     Pressure result(pascal_, PressureUnit::Pascal);
     result.pascal_ = this->pascal_ * scalar;
     if (result.pascal_ < 0.0) {
@@ -96,7 +102,8 @@ Pressure Pressure::operator*(double scalar) const{
 
 
 
-Pressure Pressure::operator/(double scalar) const{
+Pressure Pressure::operator/(double scalar) const
+{
     if (scalar == 0.0) {
         throw QuantityError(quantity_error_messages::kDivisionByZero);
     }
@@ -112,7 +119,8 @@ Pressure Pressure::operator/(double scalar) const{
 
 
 
-Pressure operator*(double scalar, const Pressure& p) {
+Pressure operator*(double scalar, const Pressure& p)
+{
     return p * scalar;
 } // ———  END OF function operator*(Pressure)———————————————————————————————————
 
@@ -132,7 +140,9 @@ static constexpr UnitAlias<PressureUnit> kPressureAliases[] = {
     {PressureUnit::Psi, "psi"},
     {PressureUnit::Torr, "torr"},
     {PressureUnit::MmHg, "mmhg"},
-};
+}; // ———  END OF kPressureAliases——————————————————————————————————————————————
+
+
 
 static constexpr UnitDisplay<PressureUnit> kPressureDisplay[] = {
     {PressureUnit::Pascal, "Pa"},
@@ -142,7 +152,9 @@ static constexpr UnitDisplay<PressureUnit> kPressureDisplay[] = {
     {PressureUnit::Psi, "psi"},
     {PressureUnit::Torr, "torr"},
     {PressureUnit::MmHg, "mmHg"},
-};
+}; // ———  END OF kPressureDisplay——————————————————————————————————————————————
+
+
 
 static constexpr PressureUnit kPressureOutputOrder[] = {
     PressureUnit::Pascal,
@@ -152,17 +164,22 @@ static constexpr PressureUnit kPressureOutputOrder[] = {
     PressureUnit::Psi,
     PressureUnit::Torr,
     PressureUnit::MmHg,
-};
+}; // ———  END OF kPressureOutputOrder——————————————————————————————————————————
+
+
 
 static bool parse_pressure_unit(const std::string& unit_str,
-                                PressureUnit* out_unit){
+                                PressureUnit* out_unit)
+{
     return parse_unit_aliases(unit_str, kPressureAliases, out_unit);
 } // ———  END OF function parse_pressure_unit———————————————————————————————————
 
 
 
-static void convert_pressure(double value, PressureUnit from_unit){
+static void convert_pressure(double value, PressureUnit from_unit)
+{
     Pressure p(value, from_unit);
+
     printf("Pressure conversion of %.4f %s:\n", value,
            display_symbol(from_unit, kPressureDisplay));
     print_all_conversions(p, kPressureOutputOrder);
@@ -170,26 +187,33 @@ static void convert_pressure(double value, PressureUnit from_unit){
 
 
 
-bool try_convert_pressure(double value, const std::string& unit_str, const std::string& to_unit_str){
+bool try_convert_pressure(double value, const std::string& unit_str, const std::string& to_unit_str)
+{
     PressureUnit from_unit;
-    if (!parse_pressure_unit(unit_str, &from_unit)) {
+
+    if(!parse_pressure_unit(unit_str, &from_unit)){
         return false;
     }
 
-    if (to_unit_str.empty()) {
+    if(to_unit_str.empty()){
         convert_pressure(value, from_unit);
+        
         return true;
     }
 
     PressureUnit to_unit;
-    if (!parse_pressure_unit(to_unit_str, &to_unit)) {
+
+    if(!parse_pressure_unit(to_unit_str, &to_unit)){
         printf("Incompatible units: '%s' is a pressure unit, '%s' is not\n",
                unit_str.c_str(), to_unit_str.c_str());
+      
         return true;
     }
 
     Pressure p(value, from_unit);
+
     printf("%s = %s\n", p.to_string(from_unit).c_str(), p.to_string(to_unit).c_str());
+    
     return true;
 } // ———  END OF function try_convert_pressure——————————————————————————————————
 

@@ -30,36 +30,41 @@ struct UnitDisplay{
 
 
 
-inline std::string to_lower_copy(const std::string& value){
+//
+inline std::string to_lower_copy(const std::string& value)
+{
     std::string lower = value;
     std::transform(lower.begin(), lower.end(), lower.begin(),
                    [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
     return lower;
-}
+} // ———  END OF function to_lower_copy—————————————————————————————————————————
 
 
 
 template <typename Unit, std::size_t N>
 bool parse_unit_aliases(const std::string& unit_str,
                         const UnitAlias<Unit> (&aliases)[N],
-                        Unit* out_unit){
+                        Unit* out_unit)
+{
     const std::string lower = to_lower_copy(unit_str);
+    
     for (const UnitAlias<Unit>& entry : aliases) {
         if (lower == entry.alias) {
             *out_unit = entry.unit;
+            
             return true;
         }
     }
 
     return false;
-}
+} // ———  END OF function parse_unit_aliases————————————————————————————————————
 
 
 
 template <typename Unit, std::size_t N>
-const char* display_symbol(Unit unit,
-                           const UnitDisplay<Unit> (&display_map)[N]) {
+const char* display_symbol(Unit unit, const UnitDisplay<Unit> (&display_map)[N])
+{
     for (const UnitDisplay<Unit>& entry : display_map) {
         if (entry.unit == unit){
             return entry.symbol;
@@ -67,14 +72,15 @@ const char* display_symbol(Unit unit,
     }
 
     return "?";
-}
+} // ———  END OF function display_symbol————————————————————————————————————————
 
 
 
 template <typename Quantity, typename Unit, std::size_t N>
 void print_all_conversions(const Quantity& quantity,
-                           const Unit (&output_units)[N]){
+                           const Unit (&output_units)[N])
+{
     for (const Unit unit : output_units) {
         printf("  %s\n", quantity.to_string(unit).c_str());
     }
-}
+} // ———  END OF function print_all_conversions—————————————————————————————————

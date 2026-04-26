@@ -14,13 +14,16 @@
 
 namespace unitfy {
 
+// Constants for foot conversions, unnamed namespace limit scope to this file.
 namespace {
-constexpr double kInternationalFootInMeters = 0.3048;
-constexpr double kUSSurveyFootInMeters = 1200.0 / 3937.0;
+    constexpr double kInternationalFootInMeters = 0.3048;
+    constexpr double kUSSurveyFootInMeters      = 1200.0 / 3937.0;
 } // namespace
 
-Length::Length(double value, LengthUnit unit){
-    
+
+//
+Length::Length(double value, LengthUnit unit)
+{    
     switch (unit){
         case LengthUnit::Millimeter:    meters_ = value / 1000.0;
                                         break;
@@ -51,7 +54,9 @@ Length::Length(double value, LengthUnit unit){
 
 
 
-double Length::to_unit(LengthUnit unit) const{
+//
+double Length::to_unit(LengthUnit unit) const
+{
     switch (unit){
         case LengthUnit::Millimeter:    return meters_ * 1000.0;
         case LengthUnit::Centimeter:    return meters_ * 100.0;
@@ -68,8 +73,11 @@ double Length::to_unit(LengthUnit unit) const{
 
 
 
-std::string Length::to_string(LengthUnit unit) const{
-    static const char* names[] = {"mm", "cm", "m", "km", "in", "ft", "usft", "ukft", "mi"};
+std::string Length::to_string(LengthUnit unit) const
+{
+    static const char* names[] = {"mm", "cm", "m",
+                                  "km", "in", "ft",
+                                  "usft", "ukft", "mi"};
     
     return format_value(to_unit(unit),
                         format_settings::kLengthPrecision) 
@@ -79,7 +87,8 @@ std::string Length::to_string(LengthUnit unit) const{
 
 
 
-Length Length::operator+(const Length& other) const{
+Length Length::operator+(const Length& other) const
+{
     Length result(meters_, LengthUnit::Meter);
     result.meters_ = this->meters_ + other.meters_;
 
@@ -88,7 +97,8 @@ Length Length::operator+(const Length& other) const{
 
 
 
-Length Length::operator-(const Length& other) const{
+Length Length::operator-(const Length& other) const
+{
     Length result(meters_, LengthUnit::Meter);
     result.meters_ = this->meters_ - other.meters_;
     if (result.meters_ < 0.0) {
@@ -100,7 +110,8 @@ Length Length::operator-(const Length& other) const{
 
 
 
-Length Length::operator*(double scalar) const{
+Length Length::operator*(double scalar) const
+{
     Length result(meters_, LengthUnit::Meter);
     result.meters_ = this->meters_ * scalar;
     if (result.meters_ < 0.0) {
@@ -112,7 +123,8 @@ Length Length::operator*(double scalar) const{
 
 
 
-Length Length::operator/(double scalar) const{
+Length Length::operator/(double scalar) const
+{
     if (scalar == 0.0) {
         throw QuantityError(quantity_error_messages::kDivisionByZero);
     }
@@ -129,7 +141,8 @@ Length Length::operator/(double scalar) const{
 
 
 
-Length operator*(double scalar, const Length& len){
+Length operator*(double scalar, const Length& len)
+{
     return len * scalar;
 } // ———  END OF function operator*(Length)—————————————————————————————————————
 
@@ -173,7 +186,9 @@ static constexpr UnitAlias<LengthUnit> kLengthAliases[] = {
     {LengthUnit::Mile, "mi"},
     {LengthUnit::Mile, "mile"},
     {LengthUnit::Mile, "miles"},
-};
+}; // ———  END OF kLengthAliases————————————————————————————————————————————————
+
+
 
 static constexpr UnitDisplay<LengthUnit> kLengthDisplay[] = {
     {LengthUnit::Millimeter, "mm"},
@@ -185,7 +200,9 @@ static constexpr UnitDisplay<LengthUnit> kLengthDisplay[] = {
     {LengthUnit::USSurveyFoot, "usft"},
     {LengthUnit::UKFoot, "ukft"},
     {LengthUnit::Mile, "mi"},
-};
+}; // ———  END OF kLengthDisplay————————————————————————————————————————————————
+
+
 
 static constexpr LengthUnit kLengthOutputOrder[] = {
     LengthUnit::Millimeter,
@@ -197,45 +214,62 @@ static constexpr LengthUnit kLengthOutputOrder[] = {
     LengthUnit::USSurveyFoot,
     LengthUnit::UKFoot,
     LengthUnit::Mile,
-};
+}; // ———  END OF kLengthOutputOrder————————————————————————————————————————————
+
+
 
 static bool parse_length_unit(const std::string& unit_str,
-                              LengthUnit* out_unit){
+                              LengthUnit* out_unit)
+{
     return parse_unit_aliases(unit_str, kLengthAliases, out_unit);
 } // ———  END OF function parse_length_unit—————————————————————————————————————
 
 
 
-static void convert_length(double value, LengthUnit from_unit){
+static void convert_length(double value, LengthUnit from_unit)
+{
     Length len(value, from_unit);
+    
     printf("Length conversion of %.4f %s:\n", value,
            display_symbol(from_unit, kLengthDisplay));
+
     print_all_conversions(len, kLengthOutputOrder);
 } // ———  END OF function convert_length————————————————————————————————————————
 
 
 
-bool try_convert_length(double value, const std::string& unit_str, const std::string& to_unit_str) {
+bool try_convert_length(double value,
+                        const std::string& unit_str,
+                        const std::string& to_unit_str)
+{
     LengthUnit from_unit;
-    if (!parse_length_unit(unit_str, &from_unit)) {
+
+    if(!parse_length_unit(unit_str, &from_unit)){
         return false;
     }
 
-    if (to_unit_str.empty()) {
+    if(to_unit_str.empty()){
         convert_length(value, from_unit);
+        
         return true;
     }
 
     LengthUnit to_unit;
-    if (!parse_length_unit(to_unit_str, &to_unit)) {
+
+    if(!parse_length_unit(to_unit_str, &to_unit))
+    {
         printf("Incompatible units: '%s' is a length unit, '%s' is not\n",
                unit_str.c_str(), to_unit_str.c_str());
+
         return true;
     }
 
     Length len(value, from_unit);
-    printf("%s = %s\n", len.to_string(from_unit).c_str(), len.to_string(to_unit).c_str());
-    return true;
+
+    printf("%s = %s\n", len.to_string(from_unit).c_str(),
+                        len.to_string(to_unit).c_str());
+    
+                        return true;
 } // ———  END OF function try_convert_length————————————————————————————————————
 
 }  // namespace unitfy

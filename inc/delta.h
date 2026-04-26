@@ -149,7 +149,8 @@ bool try_convert_pressure(double value, const std::string& unit_str, const std::
 
 
 
-class Temperature{
+class Temperature
+{
 private:
     double kelvin_ = 0.0;  // Store internally in Kelvin for conversions
 
@@ -165,7 +166,8 @@ public:
 
 
 
-class Length {
+class Length
+{
 private:
     double meters_ = 0.0;  // Store internally in meters
 
@@ -185,7 +187,8 @@ public:
 
 
 
-class Volume{
+class Volume
+{
 private:
     double liters_ = 0.0;  // Store internally in liters
 
@@ -205,7 +208,8 @@ public:
 
 
 
-class Pressure{
+class Pressure
+{
 private:
     double pascal_ = 0.0;  // Store internally in pascal
 
@@ -226,7 +230,8 @@ public:
 
 
 // CLI handler
-class MDelta{
+class MDelta
+{
 public:
     MDelta();
     ~MDelta();

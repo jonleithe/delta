@@ -28,7 +28,7 @@ Temperature::Temperature(double value, TemperatureUnit unit)
         default:                            throw QuantityError("Invalid temperature unit");
     } // ———  END OF switch(unit)———————————————————————————————————————————————
 
-    if (kelvin_ < 0.0) {
+    if(kelvin_ < 0.0){
         throw QuantityError(quantity_error_messages::kTempBelowAbsoluteZero);
     } // ———  END OF if(kelvin_ < 0)————————————————————————————————————————————
 } // ———  END OF function Temperature::Temperature——————————————————————————————
@@ -111,7 +111,9 @@ static void convert_temperature(double value, TemperatureUnit from_unit)
 
 
 
-bool try_convert_temperature(double value, const std::string& unit_str, const std::string& to_unit_str)
+bool try_convert_temperature(double value,
+                             const std::string& unit_str,
+                             const std::string& to_unit_str)
 {
     TemperatureUnit from_unit;
 
