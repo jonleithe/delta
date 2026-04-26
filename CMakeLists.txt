@@ -59,11 +59,6 @@ install(TARGETS delta
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-install(CODE "
-    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
-        unitfy
-        \"\$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/uc\")
-")
 
 install(FILES LICENSE
     DESTINATION ${CMAKE_INSTALL_DATADIR}/licenses/unitfy
