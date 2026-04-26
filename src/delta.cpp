@@ -63,6 +63,8 @@ static std::string to_lower_copy_ascii(const std::string& value)
     return lower;
 }
 
+
+
 static int token_index_at_cursor(const char* line, int cursor_pos)
 {
     if (line == nullptr || cursor_pos <= 0) {
@@ -85,6 +87,8 @@ static int token_index_at_cursor(const char* line, int cursor_pos)
     return token_index;
 }
 
+
+
 static void build_completion_words(int start)
 {
     g_completion_words.clear();
@@ -101,6 +105,8 @@ static void build_completion_words(int start)
         g_completion_words.emplace_back(alias);
     }
 }
+
+
 
 static char* repl_completion_generator(const char* text, int state)
 {
@@ -126,6 +132,8 @@ static char* repl_completion_generator(const char* text, int state)
 
     return nullptr;
 }
+
+
 
 static char** repl_attempted_completion(const char* text, int start, int end)
 {
