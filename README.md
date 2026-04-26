@@ -34,6 +34,7 @@ It supports temperature, length, volume, and pressure conversions, with:
 
 ```bash
 yay -S unitfy
+paru -S unitfy
 ```
 
 If you do not use an AUR helper, clone the AUR package from `https://aur.archlinux.org/unitfy.git` and build it with `makepkg -risc`.
