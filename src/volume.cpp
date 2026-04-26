@@ -184,14 +184,26 @@ static void convert_volume(double value, VolumeUnit from_unit){
 
 
 
-bool try_convert_volume(double value, const std::string& unit_str){
-    VolumeUnit parsed_unit;
-    if (!parse_volume_unit(unit_str, &parsed_unit)) {
+bool try_convert_volume(double value, const std::string& unit_str, const std::string& to_unit_str){
+    VolumeUnit from_unit;
+    if (!parse_volume_unit(unit_str, &from_unit)) {
         return false;
     }
 
-    convert_volume(value, parsed_unit);
+    if (to_unit_str.empty()) {
+        convert_volume(value, from_unit);
+        return true;
+    }
 
+    VolumeUnit to_unit;
+    if (!parse_volume_unit(to_unit_str, &to_unit)) {
+        printf("Incompatible units: '%s' is a volume unit, '%s' is not\n",
+               unit_str.c_str(), to_unit_str.c_str());
+        return true;
+    }
+
+    Volume vol(value, from_unit);
+    printf("%s = %s\n", vol.to_string(from_unit).c_str(), vol.to_string(to_unit).c_str());
     return true;
 } // ———  END OF function try_convert_volume————————————————————————————————————
 

@@ -7,10 +7,18 @@ unitfy \- command-line unit conversion utility
 .br
 .B unitfy
 .I value unit
+.RI [ target_unit ]
 .SH DESCRIPTION
 .B unitfy
 converts values between supported temperature, length, volume, and pressure units.
 It can run in one-shot mode from command-line arguments or in interactive REPL mode when no arguments are provided.
+In one-shot mode, the input format is:
+.I value from_unit [to_unit]
+If
+.I to_unit
+is provided, only one targeted conversion is printed.
+If omitted, all supported conversions for that unit family are printed.
+Providing more than one target unit is not supported.
 .SH OPTIONS
 .TP
 .B --version
@@ -32,6 +40,9 @@ Convert 100 Celsius to other supported temperature units.
 .TP
 .B unitfy 1 atm
 Convert 1 atmosphere to other supported pressure units.
+.TP
+.B unitfy 12 km mi
+Convert 12 kilometers to miles only.
 .TP
 .B unitfy "12 fl oz"
 Convert 12 fluid ounces to other supported volume units.

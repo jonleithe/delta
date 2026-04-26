@@ -53,12 +53,12 @@ inline constexpr const char* kGoodbyeFmt = "Thank you for using %s! Have a nice 
 inline constexpr const char* kInvalidInputFormat = "Invalid input format. Use: value unit";
 inline constexpr const char* kReplBannerFmt = "%s v%s - unit conversion REPL";
 inline constexpr const char* kReplHint = "Type 'help' for usage or 'exit' to quit.";
-inline constexpr const char* kCliUsageFmt = "Usage: %s [value unit]";
+inline constexpr const char* kCliUsageFmt = "Usage: %s [value unit [target_unit]]";
 inline constexpr const char* kCliUsageReplFmt = "Or:    %s (no args for REPL mode)";
 inline constexpr const char* kCliUsageVersionFmt = "Or:    %s --version";
 inline constexpr const char* kHelpTitleFmt = "%s unit conversion utility";
-inline constexpr const char* kHelpUsage = "Usage: value unit";
-inline constexpr const char* kHelpExamples = "Examples: 78 fahrenheit, 100 celsius, 5 meters, 2 liters, 1 atm";
+inline constexpr const char* kHelpUsage = "Usage: value unit [target_unit(s)]";
+inline constexpr const char* kHelpExamples = "Examples: 78 fahrenheit, 100 celsius, 5 meters, 2 liters, 1 atm, 12 km mi";
 inline constexpr const char* kHelpTemperatureUnits = "Temperature units: C, F, K, R (or full names)";
 inline constexpr const char* kHelpLengthUnits = "Length units: mm, cm, m, km, in, ft, usft, ukft, mi";
 inline constexpr const char* kHelpVolumeUnits = "Volume units: mL, L, gal, fl oz, m3, mm3, cm3";
@@ -134,10 +134,10 @@ enum class CommandResult{
 
 std::string format_value(double value, int precision = format_settings::kDefaultPrecision);
 
-bool try_convert_temperature(double value, const std::string& unit_str);
-bool try_convert_length(double value, const std::string& unit_str);
-bool try_convert_volume(double value, const std::string& unit_str);
-bool try_convert_pressure(double value, const std::string& unit_str);
+bool try_convert_temperature(double value, const std::string& unit_str, const std::string& to_unit_str = "");
+bool try_convert_length(double value, const std::string& unit_str, const std::string& to_unit_str = "");
+bool try_convert_volume(double value, const std::string& unit_str, const std::string& to_unit_str = "");
+bool try_convert_pressure(double value, const std::string& unit_str, const std::string& to_unit_str = "");
 
 
 

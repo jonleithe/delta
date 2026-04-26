@@ -91,14 +91,26 @@ static void convert_temperature(double value, TemperatureUnit from_unit){
 
 
 
-bool try_convert_temperature(double value, const std::string& unit_str){
-    TemperatureUnit parsed_unit;
-    if (!parse_temperature_unit(unit_str, &parsed_unit)) {
+bool try_convert_temperature(double value, const std::string& unit_str, const std::string& to_unit_str){
+    TemperatureUnit from_unit;
+    if (!parse_temperature_unit(unit_str, &from_unit)) {
         return false;
     }
 
-    convert_temperature(value, parsed_unit);
+    if (to_unit_str.empty()) {
+        convert_temperature(value, from_unit);
+        return true;
+    }
 
+    TemperatureUnit to_unit;
+    if (!parse_temperature_unit(to_unit_str, &to_unit)) {
+        printf("Incompatible units: '%s' is a temperature unit, '%s' is not\n",
+               unit_str.c_str(), to_unit_str.c_str());
+        return true;
+    }
+
+    Temperature temp(value, from_unit);
+    printf("%s = %s\n", temp.to_string(from_unit).c_str(), temp.to_string(to_unit).c_str());
     return true;
 } // ———  END OF function try_convert_temperature———————————————————————————————
 

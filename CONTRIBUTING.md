@@ -62,8 +62,8 @@ ctest --test-dir build/release --output-on-failure
 ## Running Locally
 
 ```bash
-./bin/delta
-./bin/delta 100 celsius
+./bin/unitfy
+./bin/unitfy 100 celsius
 ```
 
 See `docs/usage.md` for more examples and accepted unit aliases.
@@ -77,7 +77,7 @@ See `docs/usage.md` for more examples and accepted unit aliases.
 
 ## Versioning
 
-- Runtime version output (`./bin/delta --version`) is automated from CMake project metadata.
+- Runtime version output (`./bin/unitfy --version`) is automated from CMake project metadata.
 - Source of truth is `project(delta VERSION x.y.z ...)` in `CMakeLists.txt`.
 - To bump the application version, update that version and reconfigure/build.
 

@@ -208,14 +208,26 @@ static void convert_length(double value, LengthUnit from_unit){
 
 
 
-bool try_convert_length(double value, const std::string& unit_str) {
-    LengthUnit parsed_unit;
-    if (!parse_length_unit(unit_str, &parsed_unit)) {
+bool try_convert_length(double value, const std::string& unit_str, const std::string& to_unit_str) {
+    LengthUnit from_unit;
+    if (!parse_length_unit(unit_str, &from_unit)) {
         return false;
     }
 
-    convert_length(value, parsed_unit);
+    if (to_unit_str.empty()) {
+        convert_length(value, from_unit);
+        return true;
+    }
 
+    LengthUnit to_unit;
+    if (!parse_length_unit(to_unit_str, &to_unit)) {
+        printf("Incompatible units: '%s' is a length unit, '%s' is not\n",
+               unit_str.c_str(), to_unit_str.c_str());
+        return true;
+    }
+
+    Length len(value, from_unit);
+    printf("%s = %s\n", len.to_string(from_unit).c_str(), len.to_string(to_unit).c_str());
     return true;
 } // ———  END OF function try_convert_length————————————————————————————————————
 

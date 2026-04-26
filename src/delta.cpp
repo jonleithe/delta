@@ -81,37 +81,61 @@ CommandResult MDelta::process_input(const std::string& input){
 
     std::istringstream iss(input);
     double value;
-    std::string unit_str;
+    std::string from_unit_str;
+    std::string to_unit_str;
 
     if (!(iss >> value)){
         printf("%s\n", cli_messages::kInvalidInputFormat);
         return CommandResult::Continue;
     }
 
-    std::getline(iss >> std::ws, unit_str);
-    if (unit_str.empty()){
+    if (!(iss >> from_unit_str)){
         printf("%s\n", cli_messages::kInvalidInputFormat);
         return CommandResult::Continue;
     }
 
+    {
+        std::string remainder;
+        std::getline(iss >> std::ws, remainder);
+        if (!remainder.empty()) {
+            if (remainder.find(' ') == std::string::npos) {
+                // Exactly one more token: targeted conversion mode
+                to_unit_str = remainder;
+            } else {
+                // Multiple remaining tokens: treat all as part of a multi-word from_unit
+                from_unit_str += " ";
+                from_unit_str += remainder;
+            }
+        }
+    }
+
     try{
-        if (try_convert_temperature(value, unit_str)){
-            return CommandResult::Continue;
-        }
+        if (to_unit_str.empty()) {
+            // All-conversion mode (existing behaviour)
+            if (try_convert_temperature(value, from_unit_str)) return CommandResult::Continue;
+            if (try_convert_length(value, from_unit_str))      return CommandResult::Continue;
+            if (try_convert_volume(value, from_unit_str))      return CommandResult::Continue;
+            if (try_convert_pressure(value, from_unit_str))    return CommandResult::Continue;
+            printf("Unknown unit: %s\n", from_unit_str.c_str());
+        } else {
+            // Targeted mode: try single-word from + single-word to
+            const bool matched =
+                try_convert_temperature(value, from_unit_str, to_unit_str) ||
+                try_convert_length(value, from_unit_str, to_unit_str)      ||
+                try_convert_volume(value, from_unit_str, to_unit_str)      ||
+                try_convert_pressure(value, from_unit_str, to_unit_str);
 
-        if (try_convert_length(value, unit_str)){
-            return CommandResult::Continue;
+            if (!matched) {
+                // Fallback: treat "from to" as a multi-word from_unit (all-conversion)
+                const std::string combined = from_unit_str + " " + to_unit_str;
+                if (!try_convert_temperature(value, combined) &&
+                    !try_convert_length(value, combined)      &&
+                    !try_convert_volume(value, combined)      &&
+                    !try_convert_pressure(value, combined)) {
+                    printf("Unknown unit: %s\n", combined.c_str());
+                }
+            }
         }
-
-        if (try_convert_volume(value, unit_str)){
-            return CommandResult::Continue;
-        }
-        
-        if (try_convert_pressure(value, unit_str)){
-            return CommandResult::Continue;
-        }
-
-        printf("Unknown unit: %s\n", unit_str.c_str());
     } // ———  END OF try_convert_* checks———————————————————————————————————————
 
     catch (const QuantityError& e){

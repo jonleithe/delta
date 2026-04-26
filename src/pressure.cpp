@@ -163,14 +163,26 @@ static void convert_pressure(double value, PressureUnit from_unit){
 
 
 
-bool try_convert_pressure(double value, const std::string& unit_str){
-    PressureUnit parsed_unit;
-    if (!parse_pressure_unit(unit_str, &parsed_unit)) {
+bool try_convert_pressure(double value, const std::string& unit_str, const std::string& to_unit_str){
+    PressureUnit from_unit;
+    if (!parse_pressure_unit(unit_str, &from_unit)) {
         return false;
     }
 
-    convert_pressure(value, parsed_unit);
+    if (to_unit_str.empty()) {
+        convert_pressure(value, from_unit);
+        return true;
+    }
 
+    PressureUnit to_unit;
+    if (!parse_pressure_unit(to_unit_str, &to_unit)) {
+        printf("Incompatible units: '%s' is a pressure unit, '%s' is not\n",
+               unit_str.c_str(), to_unit_str.c_str());
+        return true;
+    }
+
+    Pressure p(value, from_unit);
+    printf("%s = %s\n", p.to_string(from_unit).c_str(), p.to_string(to_unit).c_str());
     return true;
 } // ———  END OF function try_convert_pressure——————————————————————————————————
 

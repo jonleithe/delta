@@ -49,22 +49,33 @@ Build output binaries are written to `bin/`.
 ### REPL mode
 
 ```bash
-./bin/delta
+./bin/unitfy
 ```
 
 ### One-shot conversion
 
 ```bash
-./bin/delta 100 celsius
-./bin/delta 5 km
-./bin/delta 1 atm
-./bin/delta 12 "fl oz"
+./bin/unitfy 100 celsius
+./bin/unitfy 5 km
+./bin/unitfy 12 km mi
+./bin/unitfy 1 atm
+./bin/unitfy 12 "fl oz"
 ```
+
+CLI input format is:
+
+```text
+value from_unit [to_unit]
+```
+
+- With `to_unit`, only one targeted conversion is printed.
+- Without `to_unit`, all supported conversions for that unit family are printed.
+- More than one target token is not supported (for example, `2 km m mi`).
 
 ### Version
 
 ```bash
-./bin/delta --version
+./bin/unitfy --version
 ```
 
 The version shown by the binary is generated from `project(... VERSION ...)` in `CMakeLists.txt` during CMake configure.

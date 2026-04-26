@@ -5,7 +5,7 @@
 The converter expects input in this form:
 
 ```text
-value unit
+value from_unit [to_unit]
 ```
 
 Examples:
@@ -14,6 +14,7 @@ Examples:
 - `5 meters`
 - `2 liters`
 - `1 atm`
+- `12 km mi`
 
 Unit matching is case-insensitive.
 
@@ -24,7 +25,7 @@ Unit matching is case-insensitive.
 Start the interactive shell:
 
 ```bash
-./bin/delta
+./bin/unitfy
 ```
 
 Inside REPL:
@@ -38,15 +39,21 @@ If built with `readline`, command history is stored in `~/.delta_history`.
 You can pass conversion input directly as arguments:
 
 ```bash
-./bin/delta 100 celsius
-./bin/delta 10 km
-./bin/delta 1.5 bar
+./bin/unitfy 100 celsius
+./bin/unitfy 10 km
+./bin/unitfy 12 km mi
+./bin/unitfy 1.5 bar
 ```
+
+Behavior:
+- With `to_unit`, only that target conversion is printed.
+- Without `to_unit`, all supported conversions in that unit family are printed.
+- Inputs with more than one target token are rejected (for example, `./bin/unitfy 2 km m mi`).
 
 Print the program version:
 
 ```bash
-./bin/delta --version
+./bin/unitfy --version
 ```
 
 The printed version is generated from `project(... VERSION ...)` in `CMakeLists.txt`.
@@ -54,8 +61,8 @@ The printed version is generated from `project(... VERSION ...)` in `CMakeLists.
 Units containing spaces must be quoted or passed as separate arguments:
 
 ```bash
-./bin/delta 12 "fl oz"
-./bin/delta 12 fl oz
+./bin/unitfy 12 "fl oz"
+./bin/unitfy 12 fl oz
 ```
 
 ## Supported Units and Aliases
