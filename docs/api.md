@@ -81,13 +81,24 @@ Formats numeric values for output with a configurable decimal precision.
 
 ## Top-Level Conversion Entry Points
 
-These functions parse a unit string and perform conversions for their quantity family.
+These functions parse a source unit string and perform conversions for their quantity family.
+When `to_unit_str` is omitted or empty, they print every supported conversion in
+that family. When `to_unit_str` is provided, they print only that targeted
+conversion if the target unit belongs to the same family.
 
 ```cpp
-bool try_convert_temperature(double value, const std::string& unit_str);
-bool try_convert_length(double value, const std::string& unit_str);
-bool try_convert_volume(double value, const std::string& unit_str);
-bool try_convert_pressure(double value, const std::string& unit_str);
+bool try_convert_temperature(double value,
+                             const std::string& unit_str,
+                             const std::string& to_unit_str = "");
+bool try_convert_length(double value,
+                        const std::string& unit_str,
+                        const std::string& to_unit_str = "");
+bool try_convert_volume(double value,
+                        const std::string& unit_str,
+                        const std::string& to_unit_str = "");
+bool try_convert_pressure(double value,
+                          const std::string& unit_str,
+                          const std::string& to_unit_str = "");
 ```
 
 Return value semantics:
@@ -192,4 +203,4 @@ public:
 
 `run` supports:
 - REPL mode when no conversion arguments are provided
-- one-shot conversion mode when arguments provide `value unit`
+- one-shot conversion mode when arguments provide `value unit [target_unit]`

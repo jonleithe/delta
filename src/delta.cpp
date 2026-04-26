@@ -65,13 +65,9 @@ MDelta::~MDelta()
 
 
 
-/// MDelta::run() implements the main application logic:
-/// - Parses command-line arguments to determine mode (REPL vs single input)
-/// - In REPL mode, starts an interactive loop with readline support if available
-/// - In single input mode, processes the input string directly
-/// - Handles --version flag and provides usage hints for invalid input
-/// - Catches and reports QuantityError exceptions from conversion routines
-/// - Catches and reports any unexpected exceptions to prevent crashes
+/// Process one REPL or one-shot conversion input string.
+/// Handles help/exit commands, parses value/source/target unit tokens, and
+/// dispatches to the matching quantity conversion routine.
 CommandResult MDelta::process_input(const std::string& input)
 {
 
@@ -111,10 +107,8 @@ CommandResult MDelta::process_input(const std::string& input)
     // into the from_unit_str.
     //
     // Should the input unit be two worded, like "fl oz", the user can input
-    // either "2 fl oz" or "2 fl oz mL" (with target unit) and both will work
-    // as expected. This fallback logic comes a bit later in the code after we
-    // attempt to parse the target unit, since we want to allow users to specify
-    // a single-word target unit even when the from unit is multi-word.
+    // "2 fl oz" for all conversions. For targeted conversion, use a
+    // single-token alias such as "2 floz mL".
     
     // Present the input as a stream to parse value and unit(s), and add
     // variables to hold the parsed components.

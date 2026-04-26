@@ -65,6 +65,13 @@ Units containing spaces must be quoted or passed as separate arguments:
 ./bin/unitfy 12 fl oz
 ```
 
+For targeted conversions from a multi-word source unit, use a single-token
+alias for the source unit:
+
+```bash
+./bin/unitfy 12 floz ml
+```
+
 ## Supported Units and Aliases
 
 ### Temperature
