@@ -6,9 +6,12 @@
  *              and dispatching to quantity conversion routines.
  */
 
+#include <cctype>
 #include <cstdio>
 #include <string>
+#include <vector>
 #include <cstdlib>
+#include <cstring>
 #include <sstream>
 #include <iostream>
 
@@ -22,6 +25,119 @@
 
 
 namespace unitfy {
+
+#if defined(HAVE_READLINE)
+namespace {
+
+// Single-token aliases are used for REPL completion to avoid partial
+// replacements when the user is mid-way through multi-word units.
+static constexpr const char* kReplCommands[] = {
+    "help",
+    "exit",
+    "quit",
+};
+
+static constexpr const char* kUnitAliases[] = {
+    "c", "celsius", "f", "fahrenheit", "k", "kelvin", "r", "rankine",
+    "mm", "millimeter", "millimeters", "cm", "centimeter", "centimeters",
+    "m", "meter", "meters", "km", "kilometer", "kilometers", "in", "inch", "inches",
+    "ft", "foot", "feet", "usft", "surveyfoot", "surveyfeet", "ukft", "imperialfoot", "imperialfeet",
+    "mi", "mile", "miles",
+    "ml", "milliliter", "milliliters", "l", "liter", "liters", "gal", "gallon", "gallons",
+    "floz", "fluidounce", "fluidounces", "m3", "cubicmeter", "cubicmeters",
+    "mm3", "cubicmm", "cubicmillimeter", "cm3", "cubiccm", "cubiccentimeter",
+    "pa", "pascal", "pascals", "kpa", "kilopascal", "kilopascals", "bar",
+    "atm", "atmosphere", "atmospheres", "psi", "torr", "mmhg",
+};
+
+static std::vector<std::string> g_completion_words;
+
+
+
+static std::string to_lower_copy_ascii(const std::string& value)
+{
+    std::string lower = value;
+    for (char& c : lower) {
+        c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+    }
+    return lower;
+}
+
+static int token_index_at_cursor(const char* line, int cursor_pos)
+{
+    if (line == nullptr || cursor_pos <= 0) {
+        return 0;
+    }
+
+    int token_index = 0;
+    bool in_token = false;
+    for (int i = 0; i < cursor_pos && line[i] != '\0'; ++i) {
+        if (std::isspace(static_cast<unsigned char>(line[i])) != 0) {
+            if (in_token) {
+                ++token_index;
+                in_token = false;
+            }
+        } else {
+            in_token = true;
+        }
+    }
+
+    return token_index;
+}
+
+static void build_completion_words(int start)
+{
+    g_completion_words.clear();
+
+    const int token_index = token_index_at_cursor(rl_line_buffer, start);
+    if (token_index == 0) {
+        for (const char* command : kReplCommands) {
+            g_completion_words.emplace_back(command);
+        }
+        return;
+    }
+
+    for (const char* alias : kUnitAliases) {
+        g_completion_words.emplace_back(alias);
+    }
+}
+
+static char* repl_completion_generator(const char* text, int state)
+{
+    static std::size_t completion_index = 0;
+    static std::string prefix;
+
+    if (state == 0) {
+        completion_index = 0;
+        prefix = to_lower_copy_ascii((text != nullptr) ? std::string(text) : std::string());
+    }
+
+    while (completion_index < g_completion_words.size()) {
+        const std::string& candidate = g_completion_words[completion_index++];
+        if (candidate.compare(0, prefix.size(), prefix) == 0) {
+            char* result = static_cast<char*>(std::malloc(candidate.size() + 1));
+            if (result == nullptr) {
+                return nullptr;
+            }
+            std::memcpy(result, candidate.c_str(), candidate.size() + 1);
+            return result;
+        }
+    }
+
+    return nullptr;
+}
+
+static char** repl_attempted_completion(const char* text, int start, int end)
+{
+    (void)end;
+
+    build_completion_words(start);
+    rl_attempted_completion_over = 1;
+    return rl_completion_matches(text, repl_completion_generator);
+}
+
+} // namespace
+#endif
 
 static std::string history_file_path(){
     const char* home = std::getenv("HOME");
@@ -232,6 +348,8 @@ void MDelta::repl(void)
     // Readline provides a better user experience with input editing and
     // history, but we want to support basic REPL functionality even without it.
     #if defined(HAVE_READLINE)
+        rl_attempted_completion_function = repl_attempted_completion;
+
         const std::string history_file = history_file_path();
         if (!history_file.empty()) {
             (void)read_history(history_file.c_str());

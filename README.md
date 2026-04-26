@@ -5,7 +5,7 @@
 It supports temperature, length, volume, and pressure conversions, with:
 - interactive REPL mode
 - one-shot CLI conversion mode
-- optional readline history support (when `readline` is available)
+- optional readline history and tab-completion support (when `readline` is available)
 
 ## Features
 
@@ -64,6 +64,10 @@ Build output binaries are written to `bin/`.
 ```bash
 ./bin/unitfy
 ```
+
+When built with `readline`, REPL tab completion is built in:
+- first token completes REPL commands (`help`, `exit`, `quit`)
+- later tokens complete unit aliases (for example, `celsius`, `km`, `kpa`, `floz`)
 
 ### One-shot conversion
 

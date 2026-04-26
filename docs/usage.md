@@ -34,6 +34,10 @@ Inside REPL:
 
 If built with `readline`, command history is stored in `~/.unitfy_history`.
 
+If built with `readline`, tab completion is available in REPL:
+- first token: command completion (`help`, `exit`, `quit`)
+- later tokens: unit alias completion (for example, `celsius`, `km`, `kpa`, `floz`)
+
 ### CLI mode
 
 You can pass conversion input directly as arguments:
