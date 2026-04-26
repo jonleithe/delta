@@ -8,7 +8,7 @@
 
 
 // Quantity types and unit conversions
-namespace delta{
+namespace unitfy {
 
 class QuantityError : public std::runtime_error{
 public:
@@ -232,4 +232,4 @@ private:
     CommandResult process_input(const std::string& input);
 }; // ———  END OF class MDelta —————————————————————————————————————————————————
 
-}  // namespace delta
+}  // namespace unitfy

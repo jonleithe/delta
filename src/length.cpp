@@ -5,7 +5,7 @@
 
 
 
-namespace delta{
+namespace unitfy {
 
 namespace {
 constexpr double kInternationalFootInMeters = 0.3048;
@@ -231,4 +231,4 @@ bool try_convert_length(double value, const std::string& unit_str, const std::st
     return true;
 } // ———  END OF function try_convert_length————————————————————————————————————
 
-}  // namespace delta
+}  // namespace unitfy

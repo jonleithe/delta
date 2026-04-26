@@ -1,4 +1,4 @@
-# Contributing to delta
+# Contributing to unitfy
 
 Thanks for contributing.
 
@@ -78,7 +78,7 @@ See `docs/usage.md` for more examples and accepted unit aliases.
 ## Versioning
 
 - Runtime version output (`./bin/unitfy --version`) is automated from CMake project metadata.
-- Source of truth is `project(delta VERSION x.y.z ...)` in `CMakeLists.txt`.
+- Source of truth is `project(unitfy VERSION x.y.z ...)` in `CMakeLists.txt`.
 - To bump the application version, update that version and reconfigure/build.
 
 ## Pull Request Checklist

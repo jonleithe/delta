@@ -6,7 +6,7 @@
 
 
 
-namespace delta {
+namespace unitfy {
 
 std::string format_value(double value, int precision) {
     
@@ -22,4 +22,4 @@ std::string format_value(double value, int precision) {
     return oss.str();
 } // ———  END OF function format_value——————————————————————————————————————————
 
-}  // namespace delta
+}  // namespace unitfy

@@ -5,7 +5,7 @@
 
 
 
-namespace delta {
+namespace unitfy {
 
 Temperature::Temperature(double value, TemperatureUnit unit){
     switch (unit){
@@ -114,4 +114,4 @@ bool try_convert_temperature(double value, const std::string& unit_str, const st
     return true;
 } // ———  END OF function try_convert_temperature———————————————————————————————
 
-}  // namespace delta
+}  // namespace unitfy

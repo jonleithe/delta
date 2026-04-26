@@ -13,7 +13,7 @@
 
 
 
-namespace delta {
+namespace unitfy {
 
 static std::string history_file_path(){
     const char* home = std::getenv("HOME");
@@ -21,14 +21,14 @@ static std::string history_file_path(){
         return "";
     }
 
-    return std::string(home) + "/.delta_history";
+    return std::string(home) + "/.unitfy_history";
 } // ———  END OF function history_file_path()———————————————————————————————————
 
 
 
 static std::string program_name_from_argv0(const char* argv0){
     if (argv0 == nullptr || argv0[0] == '\0') {
-        return "delta";
+        return "unitfy";
     }
 
     std::string argv0_str(argv0);
@@ -38,7 +38,7 @@ static std::string program_name_from_argv0(const char* argv0){
     }
 
     const std::string name = argv0_str.substr(last_sep + 1);
-    return name.empty() ? std::string("delta") : name;
+    return name.empty() ? std::string("unitfy") : name;
 } // ———  END OF function program_name_from_argv0()—————————————————————————————
 
 
@@ -271,4 +271,4 @@ int MDelta::run(int argc, char* argv[])
 
 } // ———  END OF function MDelta::run()—————————————————————————————————————————
 
-}  // namespace delta
+}  // namespace unitfy

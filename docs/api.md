@@ -1,4 +1,4 @@
-# delta API Reference
+# unitfy API Reference
 
 This document describes the public C++ API declared in `inc/delta.h`.
 
@@ -7,7 +7,7 @@ This document describes the public C++ API declared in `inc/delta.h`.
 All public symbols are declared under:
 
 ```cpp
-namespace delta { ... }
+namespace unitfy { ... }
 ```
 
 ## Exception Type

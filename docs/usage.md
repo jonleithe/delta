@@ -1,4 +1,4 @@
-# delta Usage Guide
+# unitfy Usage Guide
 
 ## Input Format
 
@@ -32,7 +32,7 @@ Inside REPL:
 - `help` prints usage and supported units
 - `exit` or `quit` leaves the program
 
-If built with `readline`, command history is stored in `~/.delta_history`.
+If built with `readline`, command history is stored in `~/.unitfy_history`.
 
 ### CLI mode
 
