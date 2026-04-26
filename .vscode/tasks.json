@@ -1,0 +1,77 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "CMake: Configure Debug",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--preset",
+        "debug-gcc"
+      ],
+      "group": "build"
+    },
+    {
+      "label": "CMake: Build Debug",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "--preset",
+        "build-debug"
+      ],
+      "group": "build"
+    },
+    {
+      "label": "CMake: Configure Release",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--preset",
+        "release-gcc"
+      ],
+      "group": "build"
+    },
+    {
+      "label": "CMake: Build Release",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "--preset",
+        "build-release"
+      ],
+      "group": "build"
+    },
+    {
+      "label": "CMake: Run Debug",
+      "type": "shell",
+      "command": "${workspaceFolder}/bin/delta",
+      "dependsOn": "CMake: Build Debug"
+    },
+    {
+      "label": "CMake: Clean Debug",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "--preset",
+        "build-debug",
+        "--target",
+        "clean"
+      ]
+    },
+    {
+      "label": "CMake: Clean Release",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "--preset",
+        "build-release",
+        "--target",
+        "clean"
+      ]
+    }
+  ]
+}
